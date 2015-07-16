@@ -186,6 +186,30 @@ class TestFunctionals(TestBase):
             )
         self.assertEqual(response.status_code, 404)
 
+    def test_submitting_feedback_email(self):
+        """
+        A generic test of the workflow of forwarding the feedback from a form
+        to an e-mail end point.
+        """
+
+        # User fills the user feedback form
+        form_data = dict(
+            name='Commmenter',
+            comments='Why are my citations missing?',
+        )
+        form_data['_subject'] = 'Bumblebee Feedback'
+        form_data['feedback-type'] = 'bug'
+        form_data['_replyto'] = 'commenter@email.com'
+        form_data['g-recaptcha-response'] = 'correct_response'
+
+        # User presses submit on the feedback form and then submits it to
+        # our adshelp mail
+        url = url_for('emailfeedback')
+        response = self.client.post(
+            url,
+            data=form_data
+        )
+        self.assertEqual(response.status_code, 200)
 
 class TestUnits(TestBase):
     """
